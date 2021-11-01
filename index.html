@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+
+</head>
+<body>
+  <article>
+    <header>
+      <h1>Movie Rating</h1>
+    </header>
+    <form>
+      <input class="form-control" required type="text" placeholder="Movie Title">
+      <input type="number" required  min="0" max="10"  placeholder="Rating Number 1-10" id="rating" class="form-control">
+      <button type="submit" class="btn btn-primary form-control mx-sm-3">Submit</button>
+    </form>
+
+    <div>
+      <ul id="movie-list">
+
+      </ul>
+    </div>
+    </article>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script>
+  $(document).ready(function(){
+    let currentId = 0;
+    let movieArr = [];
+
+    $('.btn.btn-primary').on('click', function( event ) {
+      event.preventDefault();
+      let $movie = $('.form-control').eq(0).val();
+      let $rating = $('.form-control').eq(1).val();
+
+      let $movieListItem = { $movie, $rating, currentId};
+      const HtmlToAppend = createMovieListItem($movieListItem);
+
+      currentId++;
+      movieArr.push($movieListItem);
+
+      $('#movie-list').append(HtmlToAppend);
+      $('form').trigger('reset');
+    });
+
+    $('body').on('click', '.btn.btn-danger', function(evt) {
+      let indexToRemove = movieArr.findIndex(movie => movie.currentId === +$(evt.target).data("deleteId"));
+      movieArr.splice(indexToRemove, 1);
+      $(evt.target)
+      .closest("tr")
+      .remove();
+    });
+
+    function createMovieListItem(data) {
+      return `
+        <tr>
+          <td>${data.$movie}</td>
+          <td>${data.$rating}</td>
+          <td>
+          <button class="btn btn-danger" data-delete-id=${data.currentId}>
+            Delete
+          </button>
+          </td>
+        <tr>
+      `;
+    }
+
+  });
+
+</script> 
+</body>
+</html>
